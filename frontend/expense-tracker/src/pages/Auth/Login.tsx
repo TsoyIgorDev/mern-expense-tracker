@@ -2,15 +2,31 @@ import { useState } from 'react'
 import AuthLayout from '../../components/layout/AuthLayout'
 import { Link, useNavigate } from 'react-router-dom';
 import Input from '../../components/Inputs/Input';
+import { validateEmail } from '../../utils/helper.js'
 
 const Login = () => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const [error, setError] = useState<null>(null);
+    const [error, setError] = useState<null | string>(null);
 
     const navigate = useNavigate();
 
-    const handleLogin = async (e) => { };
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (!validateEmail(email)) {
+            setError("Please enter a valid email address");
+            return;
+        }
+
+        if (!password) {
+            setError("Please enter the password");
+            return;
+        }
+
+        setError("");
+        // Login API call
+    };
     return (
         <AuthLayout>
             <div className='lg:w-[70%] h-3/4 md:h-full flex flex-col justify-center'>
