@@ -39,8 +39,8 @@ const SignUp = () => {
     return (
         <AuthLayout>
             <div className='lg:w-[100%] h-auto md:h-full mt-10 md:mt-0 flex flex-col justify-center'>
-                <h3 className='text-xl font-semibold text-black'>Create an account</h3>
-                <p className='text-xs text-slate-700 mt-[5px] mb-6'>Join us today by entering your details below</p>
+                <h3 className='text-xl font-semibold text-theme-primary'>Create an account</h3>
+                <p className='text-xs text-theme-secondary mt-[5px] mb-6'>Join us today by entering your details below</p>
 
                 <form onSubmit={handleSignUp}>
                     <ProfilePhotoSelector image={profilePic} setImage={setProfilePic} />
@@ -78,7 +78,7 @@ const SignUp = () => {
                         SIGNUP
                     </button>
 
-                    <p className='text-[13px] text-slate-800 mt-3'>
+                    <p className='text-[13px] text-theme-secondary mt-3'>
                         Already have an account? {" "}
                         <Link className="font-medium text-primary underline" to="/login">
                             login

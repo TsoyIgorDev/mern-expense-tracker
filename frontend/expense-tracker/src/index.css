@@ -5,6 +5,31 @@
     --font-display: "Poppins", "sans-serif";
     --breakpoint-3xl: 1920px;
     --color-primary: #875cf5;
+    --color-primary-dark: #6b4bc4;
+}
+
+:root {
+    /* Светлая тема */
+    --bg-primary: #fcfbfc;
+    --bg-secondary: #ede9fe;
+    --text-primary: #1D1D1B;
+    --text-secondary: #4A4D4A;
+    --border-color: #e2e8f0;
+    --input-bg: #f1f5f9;
+    --card-bg: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Темная тема */
+.dark {
+    --bg-primary: #1F2020;
+    --bg-secondary: #404040;
+    --text-primary: #ffffff;
+    --text-secondary: #989898;
+    --border-color: #2d2d2d;
+    --input-bg: #2d2d2d;
+    --card-bg: #1D1D1B;
+    --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
 @layer base {
@@ -13,13 +38,39 @@
     }
 
     body{
-        background-color: #fcfbfc;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
         overflow-x: hidden;
     }
 }
 
+@layer utilities {
+    .bg-theme-primary {
+        background-color: var(--bg-primary);
+    }
+    
+    .bg-theme-secondary {
+        background-color: var(--bg-secondary);
+    }
+    
+    .text-theme-primary {
+        color: var(--text-primary);
+    }
+    
+    .text-theme-secondary {
+        color: var(--text-secondary);
+    }
+    
+    .border-theme {
+        border-color: var(--border-color);
+    }
+}
+
 .input-box {
-    @apply w-full flex justify-between gap-3 text-sm text-black bg-slate-100 rounded px-4 py-3 mb-4 mt-3 border border-slate-200 outline-none;
+    @apply w-full flex justify-between gap-3 text-sm rounded px-4 py-3 mb-4 mt-3 border outline-none;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border-color: var(--input-border);
 }
 
 .btn-primary {
