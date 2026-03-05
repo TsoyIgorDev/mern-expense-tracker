@@ -1,3 +1,4 @@
+console.log('uploadMiddleware.js loaded');
 const multer = require("multer");
 
 const storage = multer.diskStorage({

@@ -46,16 +46,16 @@ exports.getDashboardData = async (req, res) => {
                     ...txn.toObject(),
                     type: "income",
                 })),
-            ... (await Expense, find({ userId }).sort({ date: -1 }).limit(5)).map(
+            ... (await Expense.find({ userId }).sort({ date: -1 }).limit(5)).map(
                 (txn) => ({
-                    ...txn.toObjectO,
+                    ...txn.toObject(),
                     type: "expense",
                 }))
         ].sort((a, b) => b.date - a.date);
 
         res.json({
-            totalBalance: (totalIcome[0]?.total || 0) - (totalExpense[0]?.total || 0),
-            totalIncome: (totalIcome[0]?.total || 0),
+            totalBalance: (totalIncome[0]?.total || 0) - (totalExpense[0]?.total || 0),
+            totalIncome: (totalIncome[0]?.total || 0),
             totalExpense: (totalExpense[0]?.total || 0),
             last30DaysExpenses: {
                 total: expensesLast30Days,

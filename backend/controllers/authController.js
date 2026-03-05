@@ -1,3 +1,5 @@
+console.log('authController.js loaded');
+
 const User = require('../models/User');
 const jwt = require("jsonwebtoken");
 
@@ -7,7 +9,7 @@ const generateToken = (id) => {
 }
 
 // Register
-exports.registerUser = async (req, res) => {
+exports.registerUser = async (req, res, next) => {
     const { fullName, email, password, profileImageUrl } = req.body;
 
     if (!fullName || !email || !password) {
@@ -35,7 +37,7 @@ exports.registerUser = async (req, res) => {
 };
 
 // login
-exports.loginUser = async (req, res) => {
+exports.loginUser = async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -44,7 +46,7 @@ exports.loginUser = async (req, res) => {
 
     try {
         const user = await User.findOne({ email });
-        if (!user || (await user.comparePassword(password))) {
+        if (!user || !(await user.comparePasswords(password))) {
             return res.status(400).json("Invalid credentials");
         }
 
@@ -59,7 +61,7 @@ exports.loginUser = async (req, res) => {
 };
 
 // Get
-exports.getUserInfo = async (req, res) => {
+exports.getUserInfo = async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id).select("-password");
 

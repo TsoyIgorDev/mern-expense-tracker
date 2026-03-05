@@ -1,21 +1,29 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import AuthLayout from '../../components/layout/AuthLayout'
 import { Link, useNavigate } from 'react-router-dom';
 import Input from '../../components/Inputs/Input';
 import { validateEmail } from '../../utils/helper.js'
 import ProfilePhotoSelector from '../../components/Inputs/ProfilePhotoSelector.js';
+import axiosInstance from '../../utils/axiosIstance.js';
+import type { AxiosError } from 'axios';
+import { UserContext } from '../../context/UserContext.jsx';
+import { API_PATH } from '../../utils/apiPaths.js';
+import uploadImage from '../../utils/uploadImage.js';
 
 const SignUp = () => {
     const [profilePic, setProfilePic] = useState<string | File | null>(null);
     const [fullName, setFullName] = useState<string>("")
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
+    const { updateUser } = useContext(UserContext);
 
     const [error, setError] = useState<null | string>(null);
     const navigate = useNavigate();
 
     const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        let profileImageUrl = "";
 
         if (!fullName) {
             setError("Please enter full name");
@@ -33,7 +41,35 @@ const SignUp = () => {
         }
 
         setError("");
+
         // SignUp API call
+        try {
+
+            if (profilePic) {
+                const imgUploadRes = await uploadImage(profilePic);
+                profileImageUrl = imgUploadRes.imageUrl || "";
+            }
+
+            const response = await axiosInstance.post(API_PATH.AUTH.REGISTER, {
+                fullName,
+                email,
+                password,
+                profileImageUrl,
+            });
+            const { token, user } = response.data;
+            if (token) {
+                localStorage.setItem('token', token);
+                updateUser(user);
+                navigate("/dashboard");
+            }
+        } catch (error) {
+            const axiosError = error as AxiosError<{ message: string }>;
+            if (axiosError.response?.data?.message) {
+                setError(axiosError.response.data.message);
+            } else {
+                setError("Something went wrong.")
+            }
+        }
 
     }
     return (

@@ -10,6 +10,7 @@ import SignUp from './pages/Auth/SignUp'
 import Home from './pages/Dashboard/Home'
 import Income from './pages/Dashboard/Income'
 import Expense from './pages/Dashboard/Expense'
+import UserProvider from './context/UserContext';
 
 type ThemeContextType = {
   theme: string,
@@ -25,7 +26,7 @@ const Root = () => {
 }
 
 const App = () => {
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState<String>('light');
 
   useEffect(() => {
     const root = document.documentElement;
@@ -41,26 +42,28 @@ const App = () => {
   }
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <button
-        onClick={toggleTheme}
-        className="fixed top-4 right-4 z-50 p-3 rounded-full w-16 h-8 flex justify-center items-center bg-primary text-white hover:opacity-90 transition-all"
-      >
-        {theme === 'light' ? <FaSun /> : <FaMoon />}
-      </button>
-      < div >
-        <Router>
-          <Routes>
-            <Route path='/' element={<Root />} />
-            <Route path='/login' element={<Login />} />
-            <Route path='/signUp' element={<SignUp />} />
-            <Route path='/dashboard' element={<Home />} />
-            <Route path='/income' element={<Income />} />
-            <Route path='/expense' element={<Expense />} />
-          </Routes>
-        </Router>
-      </div >
-    </ThemeContext.Provider>
+    <UserProvider>
+      <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        <button
+          onClick={toggleTheme}
+          className="fixed top-4 right-4 z-50 p-3 rounded-full w-16 h-8 flex justify-center items-center bg-primary text-white hover:opacity-90 transition-all"
+        >
+          {theme === 'light' ? <FaSun /> : <FaMoon />}
+        </button>
+        < div >
+          <Router>
+            <Routes>
+              <Route path='/' element={<Root />} />
+              <Route path='/login' element={<Login />} />
+              <Route path='/signUp' element={<SignUp />} />
+              <Route path='/dashboard' element={<Home />} />
+              <Route path='/income' element={<Income />} />
+              <Route path='/expense' element={<Expense />} />
+            </Routes>
+          </Router>
+        </div >
+      </ThemeContext.Provider>
+    </UserProvider>
   )
 }
 

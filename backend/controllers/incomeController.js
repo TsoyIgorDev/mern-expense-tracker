@@ -16,7 +16,7 @@ exports.addIncome = async (req, res) => {
             userId,
             icon,
             source,
-            amuont,
+            amount,
             date: new Date(date),
         });
 
@@ -32,7 +32,7 @@ exports.getAllIncome = async (req, res) => {
     const userId = req.user.id;
 
     try {
-        const income = (await Income.find({ userId })).toSorted({ date: -1 });
+        const income = (await Income.find({ userId })).sort({ date: -1 });
         res.json(income);
     } catch (error) {
         res.status(500).json({ message: "Server Error" });
@@ -53,7 +53,7 @@ exports.deleteIncome = async (req, res) => {
 exports.downloadIncomeExcel = async (req, res) => {
     const userId = req.user.id;
     try {
-        const income = (await Income.find({ userId })).toSorted({ date: -1 });
+        const income = (await Income.find({ userId })).sort({ date: -1 });
 
         const data = income.map((item) => ({
             Source: item.source,
