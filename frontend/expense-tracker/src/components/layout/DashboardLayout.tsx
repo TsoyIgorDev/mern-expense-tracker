@@ -1,7 +1,6 @@
-import { useContext } from "react"
-import { UserContext } from "../../context/UserContext"
 import Navbar from "./Navbar";
 import SideMenu from "./SideMenu";
+import { useAppSelector } from "../../store/hooks";
 
 interface DashboardLayoutProps {
     children: React.ReactNode,
@@ -9,7 +8,7 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout = ({ children, activeMenu }: DashboardLayoutProps) => {
-    const { user } = useContext(UserContext);
+    const user = useAppSelector((state) => state.user.user);
     return (
         <div className=''>
             <Navbar activeMenu={activeMenu} />

@@ -1,16 +1,17 @@
-import { useContext } from "react";
 import { SIDE_MENU_DATA } from "../../utils/data";
-import { UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { CharAvatar } from "../Cards/CharAvatar";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { logoutUser } from "../../store/slices/userSlice";
 
 interface SideMenuProps {
     activeMenu: string;
 }
 
 const SideMenu = ({ activeMenu }: SideMenuProps) => {
-    const { user, clearUser } = useContext(UserContext);
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const user = useAppSelector((state) => state.user.user);
 
     const handleClick = (route: string) => {
         if (route === "logout") {
@@ -22,8 +23,7 @@ const SideMenu = ({ activeMenu }: SideMenuProps) => {
     }
 
     const handleLogout = () => {
-        localStorage.clear();
-        clearUser();
+        dispatch(logoutUser());
         navigate("/login");
     }
 
@@ -32,7 +32,7 @@ const SideMenu = ({ activeMenu }: SideMenuProps) => {
             <div className="flex flex-col items-center justify-center gap-3 mt-3 mb-7">
                 {user?.profileImageUrl ? (
                     <img src={user?.profileImageUrl || ""} alt="Profile Image" className="w-20 h-20 bg-slate-400 rounded-full" />
-                ) : <CharAvatar fullname={user?.fullName} width="w-20" height="h-20" style="text-xl" />}
+                ) : <CharAvatar fullname={user?.fullName || ""} width="w-20" height="h-20" style="text-xl" />}
 
                 <h5 className="text-gray-950 font-medium leading-6">
                     {user?.fullName || ""}

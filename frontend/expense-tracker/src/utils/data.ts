@@ -1,33 +1,41 @@
 import {
-    LuLayoutDashboard,
     LuHandCoins,
-    LuWalletMinimal,
+    LuLayoutDashboard,
     LuLogOut,
-} from "react-icons/lu"
+    LuWalletMinimal,
+} from "react-icons/lu";
+import type { IconType } from "react-icons";
 
-export const SIDE_MENU_DATA = [
+interface SideMenuItem {
+    id: string;
+    label: string;
+    icon: IconType;
+    path: string;
+}
+
+export const SIDE_MENU_DATA: SideMenuItem[] = [
     {
         id: "01",
         label: "Dashboard",
         icon: LuLayoutDashboard,
-        path: "/dashboard"
+        path: "/dashboard",
     },
     {
         id: "02",
         label: "Income",
         icon: LuWalletMinimal,
-        path: "/income"
+        path: "/income",
     },
     {
         id: "03",
         label: "Expense",
         icon: LuHandCoins,
-        path: "/expense"
+        path: "/expense",
     },
     {
         id: "06",
         label: "Logout",
         icon: LuLogOut,
-        path: "logout"
+        path: "logout",
     },
-]
+];

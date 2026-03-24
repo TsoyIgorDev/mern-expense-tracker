@@ -1,48 +1,28 @@
-import { useCallback, useEffect, useState } from "react";
-import DashboardLayout from "../../components/layout/DashboardLayout"
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import DashboardLayout from "../../components/layout/DashboardLayout";
 import IncomeOverview from "../../components/Income/IncomeOverview";
-import axiosInstance from "../../utils/axiosIstance";
-import { API_PATH } from "../../utils/apiPaths";
 import Modal from "../../components/Modal";
 import AddIncomeForm from "../../components/Income/AddIncomeForm";
 import RecentIncome from "../../components/Dashboard/RecentIncome";
-import toast from "react-hot-toast";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import {
+    addIncome as addIncomeAction,
+    deleteIncome as deleteIncomeAction,
+    fetchIncome,
+} from "../../store/slices/incomeSlice";
 
-interface IncomeData {
-    _id: string;
-    type: string;
+type AddIncomeData = {
     amount: number;
     source: string;
     date: string;
     icon: string;
-}
-
-interface AddIncomeData {
-    amount: number;
-    source: string;
-    date: string;
-    icon: string;
-}
+};
 
 const Income = () => {
-    const [incomeData, setIncomeData] = useState<IncomeData[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const dispatch = useAppDispatch();
+    const incomeData = useAppSelector((state) => state.income.items);
     const [openAddIncomeModal, setOpenAddIncomeModal] = useState<boolean>(false);
-
-    const fetchIncomeDetails = useCallback(async () => {
-        if (loading) return;
-        setLoading(true);
-        try {
-            const response = await axiosInstance.get(`${API_PATH.INCOME.GET_ALL_INCOME}`);
-            if (response.data) {
-                setIncomeData(response.data);
-            }
-        } catch (error) {
-            console.error("Please try again", error);
-        } finally {
-            setLoading(false);
-        }
-    }, [loading]);
 
     const handleAddIncome = async (income: AddIncomeData) => {
         const { source, amount, date, icon } = income;
@@ -63,43 +43,39 @@ const Income = () => {
         }
 
         try {
-            await axiosInstance.post(API_PATH.INCOME.ADD_INCOME, {
-                source, amount, date, icon,
-            });
-
+            await dispatch(addIncomeAction({ source, amount, date, icon })).unwrap();
             setOpenAddIncomeModal(false);
             toast.success("Icome added succes");
-            fetchIncomeDetails();
         } catch (error) {
             console.error("Error adding income", error);
         }
     };
 
-    const deleteIncome = async (id: string) => {
+    const handleDeleteIncome = async (id: string) => {
         try {
-            await axiosInstance.delete(API_PATH.INCOME.DELETE_INCOME(id))
+            await dispatch(deleteIncomeAction(id)).unwrap();
             toast.success("Income details deleted");
-            fetchIncomeDetails();
         } catch (error) {
             console.error("Error delete income", error);
         }
     };
 
     useEffect(() => {
-        fetchIncomeDetails();
-    }, [fetchIncomeDetails])
+        dispatch(fetchIncome());
+    }, [dispatch]);
+
     return (
         <DashboardLayout activeMenu="Income">
-            <div className='my-5 mx-auto'>
+            <div className="my-5 mx-auto">
                 <div className="grid grid-cols-1 gap-6">
-                    <div className="">
+                    <div>
                         <IncomeOverview
                             transactions={incomeData}
                             onAddIncome={() => setOpenAddIncomeModal(true)}
                         />
                     </div>
                     <div>
-                        <RecentIncome transactions={incomeData} onDelete={(id) => deleteIncome(id)} />
+                        <RecentIncome transactions={incomeData} onDelete={(id) => handleDeleteIncome(id)} />
                     </div>
                 </div>
             </div>
@@ -108,7 +84,7 @@ const Income = () => {
                 <AddIncomeForm onAddIncome={handleAddIncome} />
             </Modal>
         </DashboardLayout>
-    )
-}
+    );
+};
 
-export default Income
+export default Income;

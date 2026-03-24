@@ -1,20 +1,16 @@
-import { useContext, useState } from 'react'
-import AuthLayout from '../../components/layout/AuthLayout'
-import { Link, useNavigate } from 'react-router-dom';
-import Input from '../../components/Inputs/Input';
-import { validateEmail } from '../../utils/helper.js'
-import axiosInstance from '../../utils/axiosIstance.js';
-import { API_PATH } from '../../utils/apiPaths.js';
-import type { AxiosError } from 'axios';
-import { UserContext } from '../../context/UserContext.jsx';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import AuthLayout from "../../components/layout/AuthLayout";
+import Input from "../../components/Inputs/Input";
+import { validateEmail } from "../../utils/helper";
+import { useAppDispatch } from "../../store/hooks";
+import { loginUser } from "../../store/slices/userSlice";
 
 const Login = () => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<null | string>(null);
-
-    const { updateUser } = useContext(UserContext);
-
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -32,32 +28,19 @@ const Login = () => {
 
         setError("");
 
-        // Login API call
         try {
-            const response = await axiosInstance.post(API_PATH.AUTH.LOGIN, {
-                email,
-                password,
-            });
-            const { token, user } = response.data;
-            if (token) {
-                localStorage.setItem('token', token);
-                updateUser(user);
-                navigate("/dashboard");
-            }
-        } catch (error) {
-            const axiosError = error as AxiosError<{ message: string }>;
-            if (axiosError.response?.data?.message) {
-                setError(axiosError.response.data.message);
-            } else {
-                setError("Something went wrong.")
-            }
+            await dispatch(loginUser({ email, password })).unwrap();
+            navigate("/dashboard");
+        } catch {
+            setError("Unable to login. Please check the error modal.");
         }
     };
+
     return (
         <AuthLayout>
-            <div className='lg:w-[70%] h-3/4 md:h-full flex flex-col justify-center'>
-                <h3 className='text-xl font-semibold text-theme-primary'>Welcome back!</h3>
-                <p className='text-xs text-theme-secondary mt-1.25 mb-6'>
+            <div className="lg:w-[70%] h-3/4 md:h-full flex flex-col justify-center">
+                <h3 className="text-xl font-semibold text-theme-primary">Welcome back!</h3>
+                <p className="text-xs text-theme-secondary mt-1.25 mb-6">
                     Please enter your detail to log in
                 </p>
 
@@ -78,14 +61,14 @@ const Login = () => {
                         type="password"
                     />
 
-                    {error && <p className='text-red-500 text-xs pb-2.5'>{error}</p>}
+                    {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
 
-                    <button type="submit" className='btn-primary'>
+                    <button type="submit" className="btn-primary">
                         LOGIN
                     </button>
 
-                    <p className='text-[13px] text-theme-secondary mt-3'>
-                        Don't have an account? {" "}
+                    <p className="text-[13px] text-theme-secondary mt-3">
+                        Don't have an account?{" "}
                         <Link className="font-medium text-primary underline" to="/signup">
                             SignUp
                         </Link>
@@ -93,7 +76,7 @@ const Login = () => {
                 </form>
             </div>
         </AuthLayout>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;

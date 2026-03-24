@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { type InternalAxiosRequestConfig } from "axios";
 import { BASE_URL } from "./apiPaths";
 
 const axiosInstance = axios.create({
@@ -11,22 +11,18 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(
-    (config) => {
+    (config: InternalAxiosRequestConfig) => {
         const accessToken = localStorage.getItem("token");
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`;
         }
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
-)
+    (error) => Promise.reject(error)
+);
 
 axiosInstance.interceptors.response.use(
-    (response) => {
-        return response;
-    },
+    (response) => response,
     (error) => {
         if (error.response) {
             if (error.response.status === 401) {
@@ -35,7 +31,7 @@ axiosInstance.interceptors.response.use(
                 console.error("Request timeout. Please try again");
             }
         } else if (error.code === "ECONNABORTED") {
-            console.error("Request timeout. Please try again.")
+            console.error("Request timeout. Please try again.");
         }
         return Promise.reject(error);
     }
