@@ -21,7 +21,7 @@ exports.addIncome = async (req, res) => {
         });
 
         await newIncome.save();
-        res.status(200).json(newIncome);
+        res.status(201).json(newIncome);
     } catch (error) {
         res.status(500).json({ message: "Server Error" });
     }
@@ -32,7 +32,7 @@ exports.getAllIncome = async (req, res) => {
     const userId = req.user.id;
 
     try {
-        const income = (await Income.find({ userId })).sort({ date: -1 });
+        const income = await Income.find({ userId }).sort({ date: -1 });
         res.json(income);
     } catch (error) {
         res.status(500).json({ message: "Server Error" });

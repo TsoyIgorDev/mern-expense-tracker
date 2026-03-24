@@ -2,11 +2,11 @@ import { useState, type ChangeEvent } from 'react'
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6"
 
 interface InputProps {
-    value: string;
+    value: string | number;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string;
     label?: string;
-    type?: 'text' | 'password' | 'email' | 'number';
+    type?: 'text' | 'password' | 'email' | 'number' | 'date';
 }
 
 const Input = ({ value, onChange, placeholder, label, type }: InputProps) => {

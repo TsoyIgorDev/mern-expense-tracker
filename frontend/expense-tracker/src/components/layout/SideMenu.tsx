@@ -5,17 +5,19 @@ import { useNavigate } from "react-router-dom";
 import { CharAvatar } from "../Cards/CharAvatar";
 
 interface SideMenuProps {
-    activeMenu: String;
+    activeMenu: string;
 }
 
 const SideMenu = ({ activeMenu }: SideMenuProps) => {
     const { user, clearUser } = useContext(UserContext);
     const navigate = useNavigate();
 
-    const handleClick = (route: String) => {
+    const handleClick = (route: string) => {
         if (route === "logout") {
             handleLogout();
             return;
+        } else {
+            navigate(`/${route}`);
         }
     }
 
@@ -40,10 +42,10 @@ const SideMenu = ({ activeMenu }: SideMenuProps) => {
             {SIDE_MENU_DATA.map((item, index) => (
                 <button
                     key={`menu_${index}`}
-                    className={`w-full flex items-center gap-4 text-[15px] ${activeMenu == item.label ? "text-white bg-primary" : ""} py-3 px-6 rounded-lg mb-3`}
+                    className={`w-full flex items-center gap-4 text-[15px] cursor-pointer ${activeMenu == item.label ? "text-white bg-primary" : ""} py-3 px-6 rounded-lg mb-3`}
                     onClick={() => handleClick(item.path)}
                 >
-                    <item.icon className="text=xl" />
+                    <item.icon className="text-xl" />
                     {item.label}
                 </button>
             ))}

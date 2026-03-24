@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import DashboardLayout from '../../components/layout/DashboardLayout'
 import { useUserAuth } from '../../hooks/useUserAuth'
 import { useNavigate } from 'react-router-dom';
@@ -8,12 +8,58 @@ import InfoCard from '../../components/Cards/InfoCard';
 import { IoMdCard } from 'react-icons/io'
 import { LuHandCoins, LuWalletMinimal } from 'react-icons/lu'
 import { addThousandsSeparator } from '../../utils/helper';
+import RecentTransactions from '../../components/Dashboard/RecentTransactions';
+import FinanceOverview from '../../components/Dashboard/FinanceOverview';
+import ExpenseTransactions from '../../components/Dashboard/ExpenseTransactions';
+import Last30DaysExpenses from '../../components/Dashboard/Last30DaysExpenses';
+import RecentIncomeWithChart from '../../components/Dashboard/RecentIncomeWithChart';
+import RecentIncome from '../../components/Dashboard/RecentIncome';
 
 const Home = () => {
     useUserAuth();
     const navigate = useNavigate();
 
-    const [dashboardData, setDashboardData] = useState<any>(null);
+    interface RecentTransaction {
+        _id: string;
+        source: string;
+        category: string;
+        icon: string | undefined;
+        date: string;
+        amount: number;
+        type: string;
+    }
+
+    interface ExpenseTransaction {
+        _id: string;
+        category: string;
+        icon: string | undefined;
+        date: string;
+        amount: number;
+        type: string;
+    }
+
+    interface IncomeTransaction {
+        _id: string;
+        source: string;
+        icon: string | undefined;
+        date: string;
+        amount: number;
+    }
+
+    interface DashboardData {
+        totalBalance: number;
+        totalIncome: number;
+        totalExpense: number;
+        recentTransactions: RecentTransaction[];
+        last30DaysExpenses: {
+            transactions: ExpenseTransaction[];
+        };
+        last60DaysIncomeTransactions: {
+            transactions: IncomeTransaction[];
+        };
+    }
+
+    const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const fetchDashboardData = async () => {
         if (loading) return;
@@ -62,6 +108,40 @@ const Home = () => {
                         color="bg-red-500"
                     />
                 </div>
+
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'>
+                    <RecentTransactions
+                        transactions={dashboardData?.recentTransactions || []}
+                        onSeeMore={() => navigate("/expense")}
+                    />
+
+                    <FinanceOverview
+                        totalBalance={dashboardData?.totalBalance || 0}
+                        totalIncome={dashboardData?.totalIncome || 0}
+                        totalExpense={dashboardData?.totalExpense || 0}
+                    />
+
+                    <ExpenseTransactions
+                        transactions={dashboardData?.last30DaysExpenses?.transactions || []}
+                        onSeeMore={() => navigate("/expense")}
+                    />
+
+                    <Last30DaysExpenses data={dashboardData?.last30DaysExpenses?.transactions || []} />
+
+
+                    <RecentIncome
+                        transactions={dashboardData?.last60DaysIncomeTransactions?.transactions || []}
+                        onSeeMore={() => navigate("/income")}
+                    />
+
+                    <RecentIncomeWithChart
+                        data={dashboardData?.last60DaysIncomeTransactions?.transactions?.slice(0, 4) || []}
+                        totalIncome={dashboardData?.totalIncome || 0}
+                    />
+
+                </div>
+
+
             </div>
         </DashboardLayout>
     )

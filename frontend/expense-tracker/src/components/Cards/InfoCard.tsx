@@ -1,6 +1,7 @@
-import React from 'react'
+import type { ReactNode } from 'react';
+
 interface InfoCardProps {
-    icon: any;
+    icon: ReactNode;
     label: string;
     color?: string;
     value: string;
@@ -14,7 +15,7 @@ const InfoCard = ({ icon, label, color, value }: InfoCardProps) => {
             </div>
             <div>
                 <h6 className='text-sm text-gray-500 mb-1'>{label}</h6>
-                <span className='text-[22px]'>{value}</span>
+                <span className='text-[22px]'>${value}</span>
             </div>
         </div>
     )

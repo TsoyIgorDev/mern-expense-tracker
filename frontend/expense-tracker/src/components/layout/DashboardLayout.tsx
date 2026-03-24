@@ -5,12 +5,11 @@ import SideMenu from "./SideMenu";
 
 interface DashboardLayoutProps {
     children: React.ReactNode,
-    activeMenu: String,
+    activeMenu: string,
 }
 
 const DashboardLayout = ({ children, activeMenu }: DashboardLayoutProps) => {
     const { user } = useContext(UserContext);
-    console.log(user)
     return (
         <div className=''>
             <Navbar activeMenu={activeMenu} />
